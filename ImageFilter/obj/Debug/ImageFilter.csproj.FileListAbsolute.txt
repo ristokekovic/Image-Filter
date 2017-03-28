@@ -1,0 +1,15 @@
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\ImageFilter.exe.config
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.Properties.Resources.resources
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.csproj.GenerateResource.Cache
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\ImageFilter.exe
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\ImageFilter.pdb
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.exe
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.pdb
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.Views.ChannelView.resources
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.Views.BaseView.resources
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\MetroFramework.Design.dll
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\MetroFramework.dll
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\MetroFramework.Fonts.dll
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.DisplayForm.resources
+c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.csprojResolveAssemblyReference.cache
+C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.ColorInput.resources

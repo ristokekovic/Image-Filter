@@ -1,0 +1,8 @@
+C:\Visual Studio 2012\Projects\appfactum\ModerUIToolbars\bin\Debug\ModernUISample.exe
+C:\Visual Studio 2012\Projects\appfactum\ModerUIToolbars\bin\Debug\ModernUISample.pdb
+C:\Visual Studio 2012\Projects\appfactum\ModerUIToolbars\obj\Debug\ModernUISample.csprojResolveAssemblyReference.cache
+C:\Visual Studio 2012\Projects\appfactum\ModerUIToolbars\obj\Debug\ModernUISample.Form1.resources
+C:\Visual Studio 2012\Projects\appfactum\ModerUIToolbars\obj\Debug\ModernUISample.Properties.Resources.resources
+C:\Visual Studio 2012\Projects\appfactum\ModerUIToolbars\obj\Debug\ModernUISample.csproj.GenerateResource.Cache
+C:\Visual Studio 2012\Projects\appfactum\ModerUIToolbars\obj\Debug\ModernUISample.exe
+C:\Visual Studio 2012\Projects\appfactum\ModerUIToolbars\obj\Debug\ModernUISample.pdb
