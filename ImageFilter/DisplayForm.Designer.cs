@@ -51,6 +51,7 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.unsafeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.metroContextMenu1.SuspendLayout();
             this.metroMenuStrip1.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -210,6 +211,8 @@
             // 
             // optionsToolStripMenuItem
             // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.unsafeToolStripMenuItem});
             this.optionsToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 11.25F);
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(90, 29);
@@ -232,6 +235,12 @@
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(122, 20);
             this.toolStripStatusLabel1.Text = "Image Properties";
+            // 
+            // unsafeToolStripMenuItem
+            // 
+            this.unsafeToolStripMenuItem.Name = "unsafeToolStripMenuItem";
+            this.unsafeToolStripMenuItem.Size = new System.Drawing.Size(181, 30);
+            this.unsafeToolStripMenuItem.Text = "Unsafe";
             // 
             // DisplayForm
             // 
@@ -278,6 +287,7 @@
         private System.Windows.Forms.ToolStripMenuItem invertToolStripMenuItem2;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripMenuItem unsafeToolStripMenuItem;
     }
 }
 

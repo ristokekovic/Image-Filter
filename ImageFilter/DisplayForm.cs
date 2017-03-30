@@ -22,6 +22,12 @@ namespace ImageFilter
             InitializeComponent();
             imageController = new ImageController(baseView, channelView);
 
+            baseView.Dock = DockStyle.Bottom;
+            baseView.Anchor = AnchorStyles.Bottom & AnchorStyles.Left;
+
+            channelView.Dock = DockStyle.Bottom;
+            channelView.Anchor = AnchorStyles.Bottom & AnchorStyles.Left;
+
             if (MetroUI.DesignMode == false)
             {
                 MetroUI.Style.PropertyChanged += Style_PropertyChanged;

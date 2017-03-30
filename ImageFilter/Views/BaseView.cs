@@ -29,7 +29,7 @@ namespace ImageFilter.Views
         {
             this.baseImage.Image = bmp.Clone(
                                     new Rectangle(0, 0, bmp.Width, bmp.Height),
-                                    System.Drawing.Imaging.PixelFormat.DontCare);
+                                   System.Drawing.Imaging.PixelFormat.DontCare);
         }
 
         public void setVisibility(bool value)
