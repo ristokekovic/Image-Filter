@@ -32,7 +32,9 @@ namespace ImageFilter.Models
 
         public void setFilteredImage(Bitmap image)
         {
-            filteredImage = image;
+            filteredImage = image.Clone(
+                                  new Rectangle(0, 0, image.Width, image.Height),
+                                  System.Drawing.Imaging.PixelFormat.DontCare);
         }
 
         public void setCIEImage(CIEModel[,] matrix)

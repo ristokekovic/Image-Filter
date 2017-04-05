@@ -76,6 +76,45 @@ namespace ImageFilter.Views
             thirdChannel.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
+        public void setRedChannel(Bitmap image, Bitmap redChannel)
+        {
+            originalImage.Image = image.Clone(
+                                  new Rectangle(0, 0, image.Width, image.Height),
+                                  System.Drawing.Imaging.PixelFormat.DontCare);
+            originalImage.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            firstChannel.Image = redChannel.Clone(
+                                  new Rectangle(0, 0, redChannel.Width, redChannel.Height),
+                                  System.Drawing.Imaging.PixelFormat.DontCare);
+            firstChannel.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        public void setGreenChannel(Bitmap image, Bitmap greenChannel)
+        {
+            originalImage.Image = image.Clone(
+                                  new Rectangle(0, 0, image.Width, image.Height),
+                                  System.Drawing.Imaging.PixelFormat.DontCare);
+            originalImage.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            secondChannel.Image = greenChannel.Clone(
+                                  new Rectangle(0, 0, greenChannel.Width, greenChannel.Height),
+                                  System.Drawing.Imaging.PixelFormat.DontCare);
+            secondChannel.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        public void setBlueChannel(Bitmap image, Bitmap blueChannel)
+        {
+            originalImage.Image = image.Clone(
+                                  new Rectangle(0, 0, image.Width, image.Height),
+                                  System.Drawing.Imaging.PixelFormat.DontCare);
+            originalImage.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            thirdChannel.Image = blueChannel.Clone(
+                                  new Rectangle(0, 0, blueChannel.Width, blueChannel.Height),
+                                  System.Drawing.Imaging.PixelFormat.DontCare);
+            thirdChannel.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
         private void originalImage_Click(object sender, EventArgs e)
         {
             this.Visible = false;

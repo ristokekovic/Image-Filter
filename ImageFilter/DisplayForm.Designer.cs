@@ -41,6 +41,9 @@
             this.loadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fIltersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.channelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,10 +51,22 @@
             this.invertToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.invertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.invertToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.x3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.x5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.x7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.comparisonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.edgeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.homogenityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.displacementFiltersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timeWarpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unsafeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoRedoBufferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.unsafeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.histogramView = new ImageFilter.Views.HistogramView();
+            this.showHistogram = new System.Windows.Forms.CheckBox();
             this.metroContextMenu1.SuspendLayout();
             this.metroMenuStrip1.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -112,6 +127,7 @@
             this.metroMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.metroMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem1,
+            this.editToolStripMenuItem,
             this.fIltersToolStripMenuItem,
             this.optionsToolStripMenuItem});
             this.metroMenuStrip1.Location = new System.Drawing.Point(20, 60);
@@ -119,6 +135,7 @@
             this.metroMenuStrip1.Size = new System.Drawing.Size(693, 33);
             this.metroMenuStrip1.TabIndex = 7;
             this.metroMenuStrip1.Text = "metroMenuStrip1";
+            this.metroMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.metroMenuStrip1_ItemClicked);
             // 
             // fileToolStripMenuItem1
             // 
@@ -152,16 +169,43 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoToolStripMenuItem,
+            this.redoToolStripMenuItem});
+            this.editToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 11.25F);
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(56, 29);
+            this.editToolStripMenuItem.Text = "Edit";
+            // 
+            // undoToolStripMenuItem
+            // 
+            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(136, 30);
+            this.undoToolStripMenuItem.Text = "Undo";
+            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
+            // 
+            // redoToolStripMenuItem
+            // 
+            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(136, 30);
+            this.redoToolStripMenuItem.Text = "Redo";
+            this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
+            // 
             // fIltersToolStripMenuItem
             // 
             this.fIltersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.channelsToolStripMenuItem,
             this.colorToolStripMenuItem,
-            this.invertToolStripMenuItem});
+            this.invertToolStripMenuItem,
+            this.edgeToolStripMenuItem,
+            this.displacementFiltersToolStripMenuItem});
             this.fIltersToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 11.25F);
             this.fIltersToolStripMenuItem.Name = "fIltersToolStripMenuItem";
             this.fIltersToolStripMenuItem.Size = new System.Drawing.Size(74, 29);
             this.fIltersToolStripMenuItem.Text = "FIlters";
+            this.fIltersToolStripMenuItem.Click += new System.EventHandler(this.fIltersToolStripMenuItem_Click);
             // 
             // channelsToolStripMenuItem
             // 
@@ -204,19 +248,104 @@
             // 
             // invertToolStripMenuItem1
             // 
+            this.invertToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.x3ToolStripMenuItem,
+            this.x5ToolStripMenuItem,
+            this.x7ToolStripMenuItem,
+            this.comparisonToolStripMenuItem});
             this.invertToolStripMenuItem1.Name = "invertToolStripMenuItem1";
             this.invertToolStripMenuItem1.Size = new System.Drawing.Size(215, 30);
             this.invertToolStripMenuItem1.Text = "Mean Removal";
             this.invertToolStripMenuItem1.Click += new System.EventHandler(this.invertToolStripMenuItem1_Click);
             // 
+            // x3ToolStripMenuItem
+            // 
+            this.x3ToolStripMenuItem.Name = "x3ToolStripMenuItem";
+            this.x3ToolStripMenuItem.Size = new System.Drawing.Size(192, 30);
+            this.x3ToolStripMenuItem.Text = "3x3";
+            this.x3ToolStripMenuItem.Click += new System.EventHandler(this.x3ToolStripMenuItem_Click);
+            // 
+            // x5ToolStripMenuItem
+            // 
+            this.x5ToolStripMenuItem.Name = "x5ToolStripMenuItem";
+            this.x5ToolStripMenuItem.Size = new System.Drawing.Size(192, 30);
+            this.x5ToolStripMenuItem.Text = "5x5";
+            this.x5ToolStripMenuItem.Click += new System.EventHandler(this.x5ToolStripMenuItem_Click);
+            // 
+            // x7ToolStripMenuItem
+            // 
+            this.x7ToolStripMenuItem.Name = "x7ToolStripMenuItem";
+            this.x7ToolStripMenuItem.Size = new System.Drawing.Size(192, 30);
+            this.x7ToolStripMenuItem.Text = "7x7";
+            this.x7ToolStripMenuItem.Click += new System.EventHandler(this.x7ToolStripMenuItem_Click);
+            // 
+            // comparisonToolStripMenuItem
+            // 
+            this.comparisonToolStripMenuItem.Name = "comparisonToolStripMenuItem";
+            this.comparisonToolStripMenuItem.Size = new System.Drawing.Size(192, 30);
+            this.comparisonToolStripMenuItem.Text = "Comparison";
+            this.comparisonToolStripMenuItem.Click += new System.EventHandler(this.comparisonToolStripMenuItem_Click);
+            // 
+            // edgeToolStripMenuItem
+            // 
+            this.edgeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.homogenityToolStripMenuItem});
+            this.edgeToolStripMenuItem.Name = "edgeToolStripMenuItem";
+            this.edgeToolStripMenuItem.Size = new System.Drawing.Size(263, 30);
+            this.edgeToolStripMenuItem.Text = "Edge Detection";
+            // 
+            // homogenityToolStripMenuItem
+            // 
+            this.homogenityToolStripMenuItem.Name = "homogenityToolStripMenuItem";
+            this.homogenityToolStripMenuItem.Size = new System.Drawing.Size(193, 30);
+            this.homogenityToolStripMenuItem.Text = "Homogenity";
+            this.homogenityToolStripMenuItem.Click += new System.EventHandler(this.homogenityToolStripMenuItem_Click);
+            // 
+            // displacementFiltersToolStripMenuItem
+            // 
+            this.displacementFiltersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.timeWarpToolStripMenuItem});
+            this.displacementFiltersToolStripMenuItem.Name = "displacementFiltersToolStripMenuItem";
+            this.displacementFiltersToolStripMenuItem.Size = new System.Drawing.Size(263, 30);
+            this.displacementFiltersToolStripMenuItem.Text = "Displacement Filters";
+            // 
+            // timeWarpToolStripMenuItem
+            // 
+            this.timeWarpToolStripMenuItem.Name = "timeWarpToolStripMenuItem";
+            this.timeWarpToolStripMenuItem.Size = new System.Drawing.Size(177, 30);
+            this.timeWarpToolStripMenuItem.Text = "TimeWarp";
+            this.timeWarpToolStripMenuItem.Click += new System.EventHandler(this.timeWarpToolStripMenuItem_Click);
+            // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.unsafeToolStripMenuItem});
+            this.unsafeToolStripMenuItem,
+            this.undoRedoBufferToolStripMenuItem});
             this.optionsToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 11.25F);
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(90, 29);
             this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // unsafeToolStripMenuItem
+            // 
+            this.unsafeToolStripMenuItem.Name = "unsafeToolStripMenuItem";
+            this.unsafeToolStripMenuItem.Size = new System.Drawing.Size(242, 30);
+            this.unsafeToolStripMenuItem.Text = "Unsafe";
+            // 
+            // undoRedoBufferToolStripMenuItem
+            // 
+            this.undoRedoBufferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sizeToolStripMenuItem});
+            this.undoRedoBufferToolStripMenuItem.Name = "undoRedoBufferToolStripMenuItem";
+            this.undoRedoBufferToolStripMenuItem.Size = new System.Drawing.Size(242, 30);
+            this.undoRedoBufferToolStripMenuItem.Text = "Undo/Redo Buffer";
+            // 
+            // sizeToolStripMenuItem
+            // 
+            this.sizeToolStripMenuItem.Name = "sizeToolStripMenuItem";
+            this.sizeToolStripMenuItem.Size = new System.Drawing.Size(124, 30);
+            this.sizeToolStripMenuItem.Text = "Size";
+            this.sizeToolStripMenuItem.Click += new System.EventHandler(this.sizeToolStripMenuItem_Click);
             // 
             // statusStrip
             // 
@@ -236,17 +365,33 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(122, 20);
             this.toolStripStatusLabel1.Text = "Image Properties";
             // 
-            // unsafeToolStripMenuItem
+            // histogramView
             // 
-            this.unsafeToolStripMenuItem.Name = "unsafeToolStripMenuItem";
-            this.unsafeToolStripMenuItem.Size = new System.Drawing.Size(181, 30);
-            this.unsafeToolStripMenuItem.Text = "Unsafe";
+            this.histogramView.Location = new System.Drawing.Point(20, 96);
+            this.histogramView.Name = "histogramView";
+            this.histogramView.Size = new System.Drawing.Size(685, 390);
+            this.histogramView.TabIndex = 9;
+            this.histogramView.Visible = false;
+            // 
+            // showHistogram
+            // 
+            this.showHistogram.AutoSize = true;
+            this.showHistogram.Location = new System.Drawing.Point(574, 69);
+            this.showHistogram.Name = "showHistogram";
+            this.showHistogram.Size = new System.Drawing.Size(139, 21);
+            this.showHistogram.TabIndex = 10;
+            this.showHistogram.Text = "Show Histograms";
+            this.showHistogram.UseVisualStyleBackColor = true;
+            this.showHistogram.Visible = false;
+            this.showHistogram.CheckedChanged += new System.EventHandler(this.showHistogram_CheckedChanged);
             // 
             // DisplayForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(733, 538);
+            this.Controls.Add(this.showHistogram);
+            this.Controls.Add(this.histogramView);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.metroMenuStrip1);
             this.Controls.Add(this.channelView);
@@ -288,6 +433,21 @@
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripMenuItem unsafeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem undoRedoBufferToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sizeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+        private Views.HistogramView histogramView;
+        private System.Windows.Forms.CheckBox showHistogram;
+        private System.Windows.Forms.ToolStripMenuItem edgeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem homogenityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem displacementFiltersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem timeWarpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem x3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem x5ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem x7ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem comparisonToolStripMenuItem;
     }
 }
 

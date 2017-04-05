@@ -12,6 +12,8 @@ using ModernUISample.metro;
 
 namespace ImageFilter
 {
+   
+
     public partial class DisplayForm : MetroFramework.Forms.MetroForm
     {
         private ImageController imageController;
@@ -20,7 +22,7 @@ namespace ImageFilter
         public DisplayForm()
         {
             InitializeComponent();
-            imageController = new ImageController(baseView, channelView);
+            imageController = new ImageController(baseView, channelView, histogramView);
 
             baseView.Dock = DockStyle.Bottom;
             baseView.Anchor = AnchorStyles.Bottom & AnchorStyles.Left;
@@ -88,8 +90,8 @@ namespace ImageFilter
 
         private void channelsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //this.baseView.setVisibility(false);
             this.channelView.setVisibility(true);
+            this.showHistogram.Visible = true;
             imageController.setChannelImages();
         }
 
@@ -106,12 +108,86 @@ namespace ImageFilter
 
         private void invertToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            imageController.applyMeanRemoval();
         }
 
         private void invertToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             imageController.applyInvertFilter();
+        }
+
+        private void fIltersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void sizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SizeInput si = new SizeInput(this.imageController);
+            si.Show();
+        }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.imageController.undo();
+        }
+
+        private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.imageController.redo();
+        }
+
+        private void histogramChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.baseView.setVisibility(false);
+            this.channelView.setVisibility(false);
+            this.histogramView.setVisibility(true);
+        }
+
+        private void showHistogram_CheckedChanged(object sender, EventArgs e)
+        {
+            this.histogramView.setVisibility(this.showHistogram.Checked);
+            this.histogramView.setBaseImage(imageController.getCurrentImage());
+        }
+
+        private void metroMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        public void hideCheckbox()
+        {
+            this.showHistogram.Visible = false;
+        }
+
+        private void homogenityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            imageController.applyEdgeDetectionHomogenity();
+        }
+
+        private void timeWarpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            imageController.applyTimeWarpFilter();
+        }
+
+        private void x3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            imageController.applyMeanRemoval(1);
+        }
+
+        private void x5ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            imageController.applyMeanRemoval(2);
+        }
+
+        private void x7ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            imageController.applyMeanRemoval(3);
+        }
+
+        private void comparisonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            imageController.meanRemovalComparison();
+            channelView.setVisibility(true);
         }
     }
 }

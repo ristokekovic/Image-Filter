@@ -11,5 +11,8 @@ c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\
 c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\MetroFramework.dll
 c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\MetroFramework.Fonts.dll
 c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.DisplayForm.resources
-c:\users\riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.csprojResolveAssemblyReference.cache
 C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.ColorInput.resources
+C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.SizeInput.resources
+C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.Views.HistogramView.resources
+C:\Users\Riki\Documents\Visual Studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.Parameter.resources
+C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.csprojResolveAssemblyReference.cache

@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -83,10 +84,24 @@
     <Compile Include="metro\MetroUI.cs" />
     <Compile Include="Models\CIEModel.cs" />
     <Compile Include="Models\ConvMatrix.cs" />
+    <Compile Include="Models\ConvolutionFilterBase.cs" />
     <Compile Include="Models\ImageModel.cs" />
+    <Compile Include="Models\ImageBuffer.cs" />
+    <Compile Include="Models\MeanRemoval3x3.cs" />
+    <Compile Include="Models\MeanRemoval5x5.cs" />
+    <Compile Include="Models\MeanRemoval7x7.cs" />
     <Compile Include="Models\RGBModel.cs" />
+    <Compile Include="Parameter.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SizeInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SizeInput.Designer.cs">
+      <DependentUpon>SizeInput.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ChannelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -99,12 +114,19 @@
     <Compile Include="Views\BaseView.Designer.cs">
       <DependentUpon>BaseView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\HistogramView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\HistogramView.Designer.cs">
+      <DependentUpon>HistogramView.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="ColorInput.resx">
       <DependentUpon>ColorInput.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DisplayForm.resx">
       <DependentUpon>DisplayForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Parameter.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -114,11 +136,17 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SizeInput.resx">
+      <DependentUpon>SizeInput.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\ChannelView.resx">
       <DependentUpon>ChannelView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\BaseView.resx">
       <DependentUpon>BaseView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\HistogramView.resx">
+      <DependentUpon>HistogramView.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
