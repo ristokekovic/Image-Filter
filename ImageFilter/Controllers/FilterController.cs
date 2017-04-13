@@ -702,6 +702,50 @@ namespace ImageFilter.Controllers
 
             return true;
         }
+
+        public static int[] HistogramZoneFilter(int[] frequency, int[] array, int size, int n, int k)
+        {
+            int[] averageValues = new int[n];
+
+            for(int i = 0; i < n - 1; i++)
+            {
+                int sum = frequency[0];
+                int divide = frequency[0];
+                for (int j = 0; j < k; j++)
+                {
+                    sum += frequency[i * k + j] * (i * k + j);
+                    divide += frequency[i * k + j];
+                }
+                averageValues[i] = sum / divide;
+
+                for(int z = 0; z < size; z++)
+                {
+                    if (array[z] >= i * k && array[z] < (i + 1) * k)
+                        array[z] = averageValues[i];
+                }
+                
+            }
+
+            int limit = 255 - (n - 1) * k;
+
+            int lastSum = 0;
+            int lastDivide = 0;
+            for (int j = 0; j < limit; j++)
+            {
+                lastSum += frequency[(n - 1) * k + j] * ((n - 1) * k + j);
+                lastDivide += frequency[(n - 1) * k + j];
+            }
+            averageValues[n-1] = lastSum / lastDivide;
+
+            for (int z = 0; z < size; z++)
+            {
+                if (array[z] >= (n-1) * k && array[z] < size - 1)
+                    array[z] = averageValues[n-1];
+            }
+
+
+            return array;
+        }
     }
 
 

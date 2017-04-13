@@ -9,6 +9,7 @@ using ImageFilter.Models;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using ImageFilter.Views;
+using System.IO;
 
 namespace ImageFilter.Controllers
 {
@@ -18,6 +19,15 @@ namespace ImageFilter.Controllers
         private BaseView baseView;
         private ChannelView channelView;
         private HistogramView histogramView;
+        
+
+        private int[] redArray;
+        private int[] greenArray;
+        private int[] blueArray;
+
+        private int[] redHistogramArray;
+        private int[] greenHistogramArray;
+        private int[] blueHistogramArray;
 
         private int size;
         private ImageBuffer undoBuffer;
@@ -28,6 +38,7 @@ namespace ImageFilter.Controllers
             imageModel = new ImageModel();
             baseView = bv;
             channelView = cv;
+            channelView.setImageModel(this.imageModel);
             histogramView = hv;
             undoBuffer = new ImageBuffer();
             redoBuffer = new ImageBuffer();
@@ -69,14 +80,88 @@ namespace ImageFilter.Controllers
             else
             {
                 SaveFileDialog dialog = new SaveFileDialog();
-                dialog.Filter = "BMP|*.bmp|JPG|*.jpg;*.jpeg|PNG|*.png";
+                dialog.Filter = "BMP|*.bmp|JPG|*.jpg;*.jpeg|PNG|*.png|RIKI|*.riki";
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
+                    String ext = Path.GetExtension(dialog.FileName);
+                    if(ext == ".riki")
+                    {
+                        if (imageModel.getDownsampledImage() == null)
+                        {
+                            MessageBox.Show("You did not choose an appropriate downsampled image. Please do that before saving into this file format");
+                            return;
+                        }
+                        else
+                        {
+                            this.storeCustomFormat(imageModel.getDownsampledImage(), dialog.FileName);
+                        }
+
+                    }
                     image.Save(dialog.FileName, ImageFormat.Jpeg);
                 }
             }
 
             this.redoBuffer.clearBuffer();
+        }
+
+        public void storeCustomFormat(Bitmap image, string name)
+        {
+            byte[] array = new byte[(imageModel.getHeight() / 2 * imageModel.getWidth() / 2) * 3];
+
+            int counter = 0;
+
+            for (int y = 0; y < imageModel.getHeight(); y += 2)
+                for (int x = 0; x < imageModel.getWidth(); x += 2)
+                {
+                    array[counter++] = image.GetPixel(x, y).R;
+                    array[counter++] = image.GetPixel(x, y).G;
+                    array[counter++] = image.GetPixel(x, y).B;
+                }
+
+            uint originalDataSize = (uint)(imageModel.getHeight() / 2 * imageModel.getWidth() / 2) * 3;
+            byte[] compressedData = new byte[originalDataSize * (101 / 100) + 384];
+
+            int compressedDataSize = CompressionController.Compress(array, compressedData, originalDataSize);
+
+            this.saveToCustomFormat(name, compressedDataSize, compressedData, image);
+
+            MessageBox.Show("Compression done!");
+        }
+
+        public void loadCustomFormat(string name)
+        {
+            int width = 0;
+            int height = 0;
+            byte[] compressedData = this.loadFromCustomFormat(name, width, height);
+            uint originalDataSize = (uint)(height / 2 * width / 2) * 3;
+            byte[] decompressedData = new byte[originalDataSize];
+            uint compressedDataSize = originalDataSize * (101 / 100) + 384;
+
+            CompressionController.Decompress(compressedData, decompressedData, (uint)compressedDataSize, originalDataSize);
+
+            int counter = 0;
+            Bitmap bmp = new Bitmap(width, height);
+            Color c;
+
+            for (int y = 0; y < height; y += 2)
+                for (int x = 0; x < width; x += 2)
+                {
+                    c = Color.FromArgb(decompressedData[counter++], decompressedData[counter++], decompressedData[counter++]);
+                    bmp.SetPixel(x, y, c);
+                    bmp.SetPixel(x + 1, y, c);
+                    bmp.SetPixel(x, y + 1, c);
+                    bmp.SetPixel(x + 1, y + 1, c);
+                }
+
+            imageModel.setImageFromBitmap(bmp);
+            imageModel.setCIEImage(setCIEImage(bmp));
+            RGBModel[,] rgbImage = convertToRGB(imageModel.getCIEImage());
+            histogramView.setBaseImage(imageModel.getFilteredImage());
+            baseView.setBaseImageFromBitmap(imageModel.getBaseImage());
+            channelView.setFilteredChannelImages(bmp, setRedChannel(rgbImage), setGreenChannel(rgbImage), setBlueChannel(rgbImage));
+            undoBuffer.clearBuffer();
+            redoBuffer.clearBuffer();
+
         }
 
         public Bitmap getCurrentImage()
@@ -121,10 +206,52 @@ namespace ImageFilter.Controllers
             return RGBImage;
         }
 
+        public void applyZoneHistogramFilter(int n, int k)
+        {
+            int[] filteredRed = FilterController.HistogramZoneFilter(this.redHistogramArray, this.redArray, imageModel.getWidth() * imageModel.getHeight(), n, k);
+            int[] filteredGreen = FilterController.HistogramZoneFilter(this.greenHistogramArray, this.greenArray, imageModel.getWidth() * imageModel.getHeight(), n, k);
+            int[] filteredBlue = FilterController.HistogramZoneFilter(this.blueHistogramArray, this.blueArray, imageModel.getWidth() * imageModel.getHeight(), n, k);
+
+            Bitmap image;
+            if (imageModel.getFilteredImage() != null)
+                image = imageModel.getFilteredImage();
+            else
+                image = imageModel.getBaseImage();
+
+            this.undoBuffer.push(image);
+
+            Bitmap bmp = new Bitmap(imageModel.getWidth(),imageModel.getHeight());
+            Color tmpColor;
+
+            for (int x = 0; x < imageModel.getWidth(); x++)
+            {
+                for (int y = 0; y < imageModel.getHeight(); y++)
+                {
+                    tmpColor = Color.FromArgb(filteredRed[x * imageModel.getHeight() + y], filteredGreen[x * imageModel.getHeight() + y], filteredBlue[x * imageModel.getHeight() + y]);
+                    bmp.SetPixel(x, y, tmpColor);
+                    this.redArray[x * imageModel.getHeight() + y] = filteredRed[x * imageModel.getHeight() + y];
+                    this.greenArray[x * imageModel.getHeight() + y] = filteredGreen[x * imageModel.getHeight() + y];
+                    this.blueArray[x * imageModel.getHeight() + y] = filteredBlue[x * imageModel.getHeight() + y];
+                }
+            }
+
+            imageModel.setFilteredImage(bmp);
+            baseView.setBaseImageFromBitmap(bmp);
+            imageModel.setCIEImage(setCIEImage(bmp));
+            RGBModel[,] rgbImage = convertToRGB(imageModel.getCIEImage());
+            histogramView.setBaseImage(imageModel.getFilteredImage());
+
+            histogramView.setRedHistogramChannel(redArray, imageModel.getHeight() * imageModel.getWidth());
+            histogramView.setGreenHistogramChannel(greenArray, imageModel.getHeight() * imageModel.getWidth());
+            histogramView.setBlueHistogramChannel(blueArray, imageModel.getHeight() * imageModel.getWidth());
+
+            channelView.setFilteredChannelImages(bmp, setRedChannel(rgbImage), setGreenChannel(rgbImage), setBlueChannel(rgbImage));
+        }
+
         public Bitmap setRedChannel(RGBModel[,] image)
         {
             Bitmap bmp = new Bitmap(imageModel.getWidth(), imageModel.getHeight());
-            int[] array = new int[imageModel.getWidth() * imageModel.getHeight()];
+            redArray = new int[imageModel.getWidth() * imageModel.getHeight()];
 
             for (int x = 0; x < imageModel.getWidth(); x++)
             {
@@ -134,18 +261,18 @@ namespace ImageFilter.Controllers
                     if (image[x, y].R >= 0)
                     {
                         tmpColor = Color.FromArgb(image[x, y].R, 0, 0);
-                        array[x * imageModel.getHeight() + y] = image[x, y].R;
+                        redArray[x * imageModel.getHeight() + y] = image[x, y].R;
                     }
                     else
                     {
                         tmpColor = Color.FromArgb(0, 0, 0);
-                        array[x * imageModel.getHeight() + y] = 0;
+                        redArray[x * imageModel.getHeight() + y] = 0;
                     }
                     bmp.SetPixel(x, y, tmpColor);
                 }
             }
 
-            histogramView.setRedHistogramChannel(array, imageModel.getHeight() * imageModel.getWidth());
+            redHistogramArray = histogramView.setRedHistogramChannel(redArray, imageModel.getHeight() * imageModel.getWidth());
 
             return bmp;
         }
@@ -153,7 +280,7 @@ namespace ImageFilter.Controllers
         public Bitmap setGreenChannel(RGBModel[,] image)
         {
             Bitmap bmp = new Bitmap(imageModel.getWidth(), imageModel.getHeight());
-            int[] array = new int[imageModel.getWidth() * imageModel.getHeight()];
+            greenArray = new int[imageModel.getWidth() * imageModel.getHeight()];
 
             for (int x = 0; x < imageModel.getWidth(); x++)
             {
@@ -163,18 +290,18 @@ namespace ImageFilter.Controllers
                     if (image[x, y].G >= 0)
                     {
                         tmpColor = Color.FromArgb(0, image[x, y].G, 0);
-                        array[x * imageModel.getHeight() + y] = image[x, y].G;
+                        greenArray[x * imageModel.getHeight() + y] = image[x, y].G;
                     }
                     else
                     {
                         tmpColor = Color.FromArgb(0, 0, 0);
-                        array[x * imageModel.getHeight() + y] = 0;
+                        greenArray[x * imageModel.getHeight() + y] = 0;
                     }
                     bmp.SetPixel(x, y, tmpColor);
                 }
             }
 
-            histogramView.setGreenHistogramChannel(array, imageModel.getHeight() * imageModel.getWidth());
+            greenHistogramArray = histogramView.setGreenHistogramChannel(greenArray, imageModel.getHeight() * imageModel.getWidth());
 
             return bmp;
 
@@ -183,7 +310,7 @@ namespace ImageFilter.Controllers
         public Bitmap setBlueChannel(RGBModel[,] image)
         {
             Bitmap bmp = new Bitmap(imageModel.getWidth(), imageModel.getHeight());
-            int[] array = new int[imageModel.getWidth() * imageModel.getHeight()];
+            blueArray = new int[imageModel.getWidth() * imageModel.getHeight()];
 
             for (int x = 0; x < imageModel.getWidth(); x++)
             {
@@ -193,18 +320,18 @@ namespace ImageFilter.Controllers
                     if (image[x, y].B >= 0)
                     {
                         tmpColor = Color.FromArgb(0, 0, image[x, y].B);
-                        array[x * imageModel.getHeight() + y] = image[x, y].B;
+                        blueArray[x * imageModel.getHeight() + y] = image[x, y].B;
                     }
                     else
                     {
                         tmpColor = Color.FromArgb(0, 0, 0);
-                        array[x * imageModel.getHeight() + y] = 0;
+                        blueArray[x * imageModel.getHeight() + y] = 0;
                     }
                     bmp.SetPixel(x, y, tmpColor);
                 }
             }
 
-            histogramView.setBlueHistogramChannel(array, imageModel.getHeight() * imageModel.getWidth());
+            blueHistogramArray = histogramView.setBlueHistogramChannel(blueArray, imageModel.getHeight() * imageModel.getWidth());
 
             return bmp;
 
@@ -422,6 +549,157 @@ namespace ImageFilter.Controllers
                 histogramView.setBaseImage(imageModel.getFilteredImage());
                 channelView.setFilteredChannelImages(bmp, setRedChannel(rgbImage), setGreenChannel(rgbImage), setBlueChannel(rgbImage));
             }
+        }
+
+        public void downsampleAllChannels()
+        {
+            Bitmap image;
+            if (imageModel.getFilteredImage() != null)
+                image = imageModel.getFilteredImage();
+            else
+                image = imageModel.getBaseImage();
+
+            channelView.setChannelImages(image, this.downsampleChannel(this.convertToRGB(imageModel.getCIEImage()), "red"),
+                                                this.downsampleChannel(this.convertToRGB(imageModel.getCIEImage()), "green"),
+                                                this.downsampleChannel(this.convertToRGB(imageModel.getCIEImage()), "blue"));
+        }
+
+        public Bitmap downsampleChannel(RGBModel[,] image, string channel)
+        {
+            Bitmap bmp = new Bitmap(imageModel.getWidth(), imageModel.getHeight());
+            RGBModel firstPixel;
+            RGBModel secondPixel;
+            RGBModel thirdPixel;
+            RGBModel fourthPixel;
+
+            int averageRed;
+            int averageGreen;
+            int averageBlue;
+
+            for (int y = 0; y < imageModel.getHeight(); y++)
+                for (int x = 0; x < imageModel.getWidth(); x++)
+                {
+                    if (image[x, y].R < 0)
+                        image[x, y].R = 0;
+
+                    if (image[x, y].G < 0)
+                        image[x, y].G = 0;
+
+                    if (image[x, y].B < 0)
+                        image[x, y].B = 0;
+                }
+
+            for (int y = 0; y < imageModel.getHeight(); y+=2)
+                for (int x = 0; x < imageModel.getWidth(); x+=2)
+                {
+                    
+
+                    switch(channel)
+                    {
+                        case "red":
+                            firstPixel = image[x, y];
+                            secondPixel = image[x + 1, y];
+                            thirdPixel = image[x, y + 1];
+                            fourthPixel = image[x + 1, y + 1];
+                            averageGreen = (firstPixel.G + secondPixel.G + thirdPixel.G + fourthPixel.G) / 4;
+                            averageBlue=(firstPixel.B + secondPixel.B + thirdPixel.B + fourthPixel.B) / 4;
+                            if (averageGreen < 0)
+                                averageGreen = 0;
+                            if (averageBlue < 0)
+                                averageBlue = 0;
+                            bmp.SetPixel(x, y, Color.FromArgb(image[x, y].R, averageGreen, averageBlue));
+                            bmp.SetPixel(x + 1, y, Color.FromArgb(image[x + 1, y].R, averageGreen, averageBlue));
+                            bmp.SetPixel(x, y + 1, Color.FromArgb(image[x, y + 1].R, averageGreen, averageBlue));
+                            bmp.SetPixel(x + 1, y + 1, Color.FromArgb(image[x + 1, y + 1].R, averageGreen, averageBlue));
+                            break;
+                        case "green":
+                            firstPixel = image[x, y];
+                            secondPixel = image[x + 1, y];
+                            thirdPixel = image[x, y + 1];
+                            fourthPixel = image[x + 1, y + 1];
+                            averageRed = (firstPixel.R + secondPixel.R + thirdPixel.R + fourthPixel.R) / 4;
+                            averageBlue = (firstPixel.B + secondPixel.B + thirdPixel.B + fourthPixel.B) / 4;
+                            if (averageRed < 0)
+                                averageRed = 0;
+                            if (averageBlue < 0)
+                                averageBlue = 0;
+                            bmp.SetPixel(x, y, Color.FromArgb(averageRed, image[x,y].G, averageBlue));
+                            bmp.SetPixel(x + 1, y, Color.FromArgb(averageRed, image[x+1, y].G, averageBlue));
+                            bmp.SetPixel(x, y + 1, Color.FromArgb(averageRed, image[x, y+1].G, averageBlue));
+                            bmp.SetPixel(x + 1, y + 1, Color.FromArgb(averageRed, image[x+1, y+1].G, averageBlue));
+                            break;
+                        case "blue":
+                            firstPixel = image[x, y];
+                            secondPixel = image[x + 1, y];
+                            thirdPixel = image[x, y + 1];
+                            fourthPixel = image[x + 1, y + 1];
+                            averageRed = (firstPixel.R + secondPixel.R + thirdPixel.R + fourthPixel.R) / 4;
+                            averageGreen = (firstPixel.G + secondPixel.G + thirdPixel.G + fourthPixel.G) / 4;
+                            if (averageRed < 0)
+                                averageRed = 0;
+                            if (averageGreen < 0)
+                                averageGreen = 0;
+                            bmp.SetPixel(x, y, Color.FromArgb(averageRed, averageGreen, image[x, y].R));
+                            bmp.SetPixel(x + 1, y, Color.FromArgb(averageRed, averageGreen, image[x + 1, y].B));
+                            bmp.SetPixel(x, y + 1, Color.FromArgb(averageRed, averageGreen, image[x, y + 1].B));
+                            bmp.SetPixel(x + 1, y + 1, Color.FromArgb(averageRed, averageGreen, image[x + 1, y + 1].B));
+                            break;
+                    }
+                }
+
+            return bmp;
+        }
+
+        public void saveToCustomFormat(string file, int size, byte[] array, Bitmap bitmap)
+        {
+            //PPM File Format
+            //Header contains:
+            //P3 means that this is a RGB color image in ASCII
+            //Next two values are width and height of the image in pixels
+            //The last number is the maximum value each color can take
+            
+            //After this minimal header, raw RGB data follows
+
+            //Use a streamwriter to write the text part of the encoding
+            var writer = new StreamWriter(file);
+            writer.Write("P6" + "\n");
+            writer.Write(bitmap.Width + " " + bitmap.Height + "\n");
+            writer.Write("255" + "\n");
+            writer.Close();
+            //Switch to a binary writer to write the data
+            var writerB = new BinaryWriter(new FileStream(file, FileMode.Append));
+
+            for(int i = 0; i < size; i++)
+            {
+                writerB.Write(array[i]);
+            }
+            writerB.Close();
+        }
+
+        public byte[] loadFromCustomFormat(string file, int width, int height)
+        {
+            var reader = new BinaryReader(new FileStream(file, FileMode.Open));
+            if (reader.ReadChar() != 'P' || reader.ReadChar() != '6')
+                return null;
+            reader.ReadChar(); //Eat newline
+            string widths = "", heights = "";
+            char temp;
+            while ((temp = reader.ReadChar()) != ' ')
+                widths += temp;
+            while ((temp = reader.ReadChar()) >= '0' && temp <= '9')
+                heights += temp;
+            if (reader.ReadChar() != '2' || reader.ReadChar() != '5' || reader.ReadChar() != '5')
+                return null;
+            reader.ReadChar(); //Eat the last newline
+            width = int.Parse(widths);
+            height = int.Parse(heights);
+
+            //Read in the pixels
+            byte[] array = new byte[(width / 2 * height / 2) * 3];
+            for (int i = 0; i < (width / 2 * height / 2) * 3; i++)
+                array[i] = reader.ReadByte();
+
+            return array;
         }
     }
 }

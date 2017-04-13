@@ -46,7 +46,7 @@ namespace ImageFilter.Models
                 buffer = new Bitmap[size];
             }
 
-            return this.currentNoOfElements == this.size - 1;
+            return this.currentNoOfElements == this.size;
         }
 
         public void clearBuffer()

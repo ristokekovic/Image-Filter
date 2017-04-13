@@ -15,14 +15,6 @@ namespace ImageFilter.Views
         public HistogramView()
         {
             InitializeComponent();
-            /*chart1.ChartAreas[0].AxisX.Minimum = 0;
-            chart1.ChartAreas[0].AxisY.Maximum = 255;
-            chart2.ChartAreas[0].AxisY.Minimum = 0;
-            chart2.ChartAreas[0].AxisY.Maximum = 255;
-            chart3.ChartAreas[0].AxisY.Minimum = 0;
-            chart3.ChartAreas[0].AxisY.Maximum = 255;
-            chart4.ChartAreas[0].AxisY.Minimum = 0;
-            chart4.ChartAreas[0].AxisY.Maximum = 255;*/
         }
 
         public void setVisibility(bool value)
@@ -43,8 +35,10 @@ namespace ImageFilter.Views
             baseImage.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
-        public void setRedHistogramChannel(int[] array, int size)
+        public int[] setRedHistogramChannel(int[] array, int size)
         {
+            redChart.Series["Red"].Points.Clear();
+
             int[] frequency = new int[256];
 
             for (int i = 0; i < 256; i++)
@@ -55,14 +49,26 @@ namespace ImageFilter.Views
                 frequency[array[i]]++;
             }
 
-            for(int i=0; i< size;i++)
+            for(int i=0; i< 255;i++)
+            {
+                redChart.Series["Red"].Points.AddXY(i, frequency[i]);
+            }
+
+            return frequency;
+        }
+
+        public void setRedHistogramChannelFromFrequency(int[] array, int[] frequency, int size)
+        {
+            for (int i = 0; i < size; i++)
             {
                 redChart.Series["Red"].Points.AddXY(array[i], frequency[array[i]]);
             }
         }
 
-        public void setGreenHistogramChannel(int[] array, int size)
+        public int[] setGreenHistogramChannel(int[] array, int size)
         {
+            greenChart.Series["Green"].Points.Clear();
+
             int[] frequency = new int[256];
 
             for (int i = 0; i < 256; i++)
@@ -73,14 +79,25 @@ namespace ImageFilter.Views
                 frequency[array[i]]++;
             }
 
+            for (int i = 0; i < 255; i++)
+            {
+                greenChart.Series["Green"].Points.AddXY(i, frequency[i]);
+            }
+
+            return frequency;
+        }
+
+        public void setGreenHistogramChannelFromFrequency(int[] array, int[] frequency, int size)
+        {
             for (int i = 0; i < size; i++)
             {
                 greenChart.Series["Green"].Points.AddXY(array[i], frequency[array[i]]);
             }
         }
 
-        public void setBlueHistogramChannel(int[] array, int size)
+        public int[] setBlueHistogramChannel(int[] array, int size)
         {
+            blueChart.Series["Blue"].Points.Clear();
             int[] frequency = new int[256];
 
             for (int i = 0; i < 256; i++)
@@ -91,9 +108,41 @@ namespace ImageFilter.Views
                 frequency[array[i]]++;
             }
 
+            for (int i = 0; i < 255; i++)
+            {
+                blueChart.Series["Blue"].Points.AddXY(i, frequency[i]);
+            }
+
+            return frequency;
+        }
+
+        public void setBlueHistogramChannelFromFrequency(int[] array, int[] frequency, int size)
+        {
             for (int i = 0; i < size; i++)
             {
                 blueChart.Series["Blue"].Points.AddXY(array[i], frequency[array[i]]);
+            }
+        }
+
+        public void setFilteredChannels(int[] redHistogramArray, int[] greenHistogramArray, int[] blueHistogramArray)
+        {
+            redChart.Series["Red"].Points.Clear();
+            greenChart.Series["Green"].Points.Clear();
+            blueChart.Series["Blue"].Points.Clear();
+
+            for (int i = 0; i < 255; i++)
+            {
+                redChart.Series["Red"].Points.AddXY(i, redHistogramArray[i]);
+            }
+
+            for (int i = 0; i < 255; i++)
+            {
+                greenChart.Series["Green"].Points.AddXY(i, greenHistogramArray[i]);
+            }
+
+            for (int i = 0; i < 255; i++)
+            {
+                blueChart.Series["Blue"].Points.AddXY(i, blueHistogramArray[i]);
             }
         }
     }

@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace ImageFilter.Models
 {
-    class ImageModel
+    public class ImageModel
     {
         private int width;
         private int height;
         private Bitmap image;
         private Bitmap filteredImage;
         private CIEModel[,] CIEimage;
+        private Bitmap downsampledImage;
 
         public ImageModel()
         {
@@ -28,6 +29,13 @@ namespace ImageFilter.Models
             image = new Bitmap(Bitmap.FromFile(path));
             width = image.Width;
             height = image.Height;
+        }
+
+        public void setImageFromBitmap(Bitmap bmp)
+        {
+            image = bmp.Clone(
+                                  new Rectangle(0, 0, bmp.Width, bmp.Height),
+                                  System.Drawing.Imaging.PixelFormat.DontCare);
         }
 
         public void setFilteredImage(Bitmap image)
@@ -67,6 +75,15 @@ namespace ImageFilter.Models
             return height;
         }
 
+        public void setDownsampledImage(Bitmap image)
+        {
+            this.downsampledImage = image;
+        }
+
+        public Bitmap getDownsampledImage()
+        {
+            return this.downsampledImage;
+        }
 
 
     }

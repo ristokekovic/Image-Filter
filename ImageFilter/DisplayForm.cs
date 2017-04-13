@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ImageFilter.Controllers;
 using ModernUISample.metro;
+using System.IO;
 
 namespace ImageFilter
 {
@@ -66,7 +67,7 @@ namespace ImageFilter
             // Create a new OpenFileDialog and display it.
             String name;
             OpenFileDialog file = new OpenFileDialog();
-            file.Filter = "Image Files(*.jpeg;*.bmp;*.png;*.jpg)|*.jpeg;*.bmp;*.png;*.jpg";
+            file.Filter = "Image Files(*.jpeg;*.bmp;*.png;*.jpg;*.riki)|*.jpeg;*.bmp;*.png;*.jpg;*.riki";
             if (file.ShowDialog() == DialogResult.OK)
             {
                 name = file.FileName;
@@ -188,6 +189,21 @@ namespace ImageFilter
         {
             imageController.meanRemovalComparison();
             channelView.setVisibility(true);
+        }
+
+        private void zoneFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HistogramFilterInput dlg = new HistogramFilterInput();
+            if (DialogResult.OK == dlg.ShowDialog())
+            {
+                imageController.applyZoneHistogramFilter(dlg.getN(), dlg.getK());
+            }
+        }
+
+        private void downsampleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.imageController.downsampleAllChannels();
+            this.channelView.Visible = true;           
         }
     }
 }

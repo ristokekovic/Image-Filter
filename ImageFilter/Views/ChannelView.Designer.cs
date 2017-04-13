@@ -54,6 +54,7 @@
             this.firstChannel.Size = new System.Drawing.Size(348, 181);
             this.firstChannel.TabIndex = 1;
             this.firstChannel.TabStop = false;
+            this.firstChannel.Click += new System.EventHandler(this.firstChannel_Click);
             // 
             // secondChannel
             // 
@@ -62,6 +63,7 @@
             this.secondChannel.Size = new System.Drawing.Size(324, 185);
             this.secondChannel.TabIndex = 2;
             this.secondChannel.TabStop = false;
+            this.secondChannel.Click += new System.EventHandler(this.secondChannel_Click);
             // 
             // thirdChannel
             // 
@@ -70,6 +72,7 @@
             this.thirdChannel.Size = new System.Drawing.Size(347, 185);
             this.thirdChannel.TabIndex = 3;
             this.thirdChannel.TabStop = false;
+            this.thirdChannel.Click += new System.EventHandler(this.thirdChannel_Click);
             // 
             // ChannelView
             // 
