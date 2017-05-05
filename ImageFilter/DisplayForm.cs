@@ -18,12 +18,15 @@ namespace ImageFilter
     public partial class DisplayForm : MetroFramework.Forms.MetroForm
     {
         private ImageController imageController;
+        private AudioController audioController;
         private Bitmap tmp;
 
         public DisplayForm()
         {
             InitializeComponent();
+            this.baseView.setMainForm(this);
             imageController = new ImageController(baseView, channelView, histogramView);
+            audioController = new AudioController();
 
             baseView.Dock = DockStyle.Bottom;
             baseView.Anchor = AnchorStyles.Bottom & AnchorStyles.Left;
@@ -204,6 +207,40 @@ namespace ImageFilter
         {
             this.imageController.downsampleAllChannels();
             this.channelView.Visible = true;           
+        }
+
+        private void channelSubtractionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.audioController.ModifyChannels();
+        }
+
+        private void colorPickerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog cd = new ColorDialog();
+            if(DialogResult.OK == cd.ShowDialog())
+            {
+                imageController.setPickedColor(cd.Color);
+            }
+        }
+
+        private void floodFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog cd = new ColorDialog();
+            if (DialogResult.OK == cd.ShowDialog())
+            {
+                imageController.setPickedColor(cd.Color);
+            }
+            toolStripStatusLabel1.Text = "Please click on a pixel that you wish to change";
+        }
+
+        public void floodFilter(Color c, int x, int y)
+        {
+            imageController.applyFloodFilter(c, x, y);
+        }
+
+        private void playAudioToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            audioController.PlayStream();
         }
     }
 }

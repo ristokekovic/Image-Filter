@@ -51,6 +51,7 @@
             this.baseImage.TabIndex = 1;
             this.baseImage.TabStop = false;
             this.baseImage.Visible = false;
+            this.baseImage.Click += new System.EventHandler(this.baseImage_Click);
             // 
             // BaseView
             // 

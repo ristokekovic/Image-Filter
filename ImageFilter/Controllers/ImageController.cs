@@ -33,6 +33,8 @@ namespace ImageFilter.Controllers
         private ImageBuffer undoBuffer;
         private ImageBuffer redoBuffer;
 
+        private Color pickedColor;
+
         public ImageController(BaseView bv, ChannelView cv, HistogramView hv)
         {
             imageModel = new ImageModel();
@@ -59,6 +61,16 @@ namespace ImageFilter.Controllers
             baseView.setBaseImage(path);
             histogramView.setBaseImage(imageModel.getBaseImage());
             this.redoBuffer.clearBuffer();
+        }
+
+        public void setPickedColor(Color c)
+        {
+            this.pickedColor = c;
+        }
+
+        public Color getPickedColor()
+        {
+            return pickedColor;
         }
 
         public int[] returnImageProperties()
@@ -701,5 +713,178 @@ namespace ImageFilter.Controllers
 
             return array;
         }
+
+        public double Sim(Color first, Color second)
+        {
+            return Math.Sqrt(Math.Pow((first.R - second.R),2) + Math.Pow((first.G - second.G),2) + Math.Pow((first.B - second.B), 2));
+        }
+
+        public Bitmap floodfill(Color ci, Bitmap image, int x, int y, Color Y, int S)
+        {
+            //Bitmap result = new Bitmap(image.Width, image.Height);
+            Stack<Pixel> pixels = new Stack<Pixel>();
+            int ctr = 0;
+
+            pixels.Push(new Pixel(x, y, ci));
+
+            while (pixels.Count > 0)
+            {
+
+                if (ctr > 5000000)
+                    break;
+
+                Pixel popped = pixels.Pop();
+
+                if (popped.x == 2 || popped.y == 2 || popped.x == image.Width || popped.y == image.Height)
+                    continue;
+
+                if (Sim(popped.color, Y) <= S && Sim(ci, Y) != 0.0)
+                {
+                    ctr++;
+                    image.SetPixel(popped.x, popped.y, Y);
+
+                    pixels.Push(new Pixel(popped.x - 1, popped.y, image.GetPixel(x - 1, y)));
+                    pixels.Push(new Pixel(popped.x - 1, popped.y - 1, image.GetPixel(x - 1, y - 1)));
+                    pixels.Push(new Pixel(popped.x - 1, popped.y + 1, image.GetPixel(x - 1, y + 1)));
+                    
+                    pixels.Push(new Pixel(popped.x, popped.y - 1, image.GetPixel(x, y - 1)));
+                    pixels.Push(new Pixel(popped.x, popped.y + 1, image.GetPixel(x, y + 1)));
+                    
+                    
+                    pixels.Push(new Pixel(popped.x + 1, popped.y - 1, image.GetPixel(x + 1, y - 1)));
+                    pixels.Push(new Pixel(popped.x + 1, popped.y, image.GetPixel(x + 1, y)));
+                    pixels.Push(new Pixel(popped.x + 1, popped.y + 1, image.GetPixel(x + 1, y + 1)));
+                }
+                else if(Sim(ci,Y) != 0.0)
+                {
+                    pixels.Push(new Pixel(popped.x - 1, popped.y, image.GetPixel(x - 1, y)));
+                    pixels.Push(new Pixel(popped.x - 1, popped.y - 1, image.GetPixel(x - 1, y - 1)));
+                    pixels.Push(new Pixel(popped.x - 1, popped.y + 1, image.GetPixel(x - 1, y + 1)));
+
+                    pixels.Push(new Pixel(popped.x, popped.y - 1, image.GetPixel(x, y - 1)));
+                    pixels.Push(new Pixel(popped.x, popped.y + 1, image.GetPixel(x, y + 1)));
+
+
+                    pixels.Push(new Pixel(popped.x + 1, popped.y - 1, image.GetPixel(x + 1, y - 1)));
+                    pixels.Push(new Pixel(popped.x + 1, popped.y, image.GetPixel(x + 1, y)));
+                    pixels.Push(new Pixel(popped.x + 1, popped.y + 1, image.GetPixel(x + 1, y + 1)));
+                }
+            }
+
+            return image;
+        }
+
+        public void checkIfSimilar(Color Y, Point T, Bitmap b, int S, int numberOfSteps)
+        {
+            if (T.X == 2 || T.Y == 2 || T.X == b.Width || T.Y == b.Height)
+                return;
+
+            if (numberOfSteps > 3000)
+                return;
+
+            /*if(numberOfSteps == 250)
+                MessageBox.Show("250");
+
+            if (numberOfSteps == 500)
+                MessageBox.Show("500");
+
+            if (numberOfSteps == 750)
+                MessageBox.Show("750");
+
+            if (numberOfSteps == 2999)
+                MessageBox.Show("2999");*/
+
+            Color ci = b.GetPixel(T.X - 1, T.Y);
+            if(Sim(ci, Y) <= S && Sim(ci, Y) != 0.0)
+            {
+                b.SetPixel(T.X - 1, T.Y, pickedColor);
+                numberOfSteps++;
+                checkIfSimilar(Y, new Point(T.X - 1, T.Y), b, S, numberOfSteps);
+            }
+            ci = b.GetPixel(T.X - 1, T.Y - 1);
+            if (Sim(ci, Y) <= S && Sim(ci, Y) != 0.0)
+            {
+                b.SetPixel(T.X - 1, T.Y - 1, pickedColor);
+                numberOfSteps++;
+                checkIfSimilar(Y, new Point(T.X - 1, T.Y - 1), b, S, numberOfSteps);
+            }
+            ci = b.GetPixel(T.X - 1, T.Y + 1);
+            if (Sim(ci, Y) <= S && Sim(ci, Y) != 0.0)
+            {
+                b.SetPixel(T.X - 1, T.Y + 1, pickedColor);
+                numberOfSteps++;
+                checkIfSimilar(Y, new Point(T.X - 1, T.Y + 1), b, S, numberOfSteps);
+            }
+            ci = b.GetPixel(T.X, T.Y - 1);
+            if (Sim(ci, Y) <= S && Sim(ci, Y) != 0.0)
+            {
+                b.SetPixel(T.X, T.Y - 1, pickedColor);
+                numberOfSteps++;
+                checkIfSimilar(Y, new Point(T.X, T.Y - 1), b, S, numberOfSteps);
+            }
+            ci = b.GetPixel(T.X, T.Y + 1);
+            if (Sim(ci, Y) <= S && Sim(ci, Y) != 0.0)
+            {
+                b.SetPixel(T.X, T.Y + 1, pickedColor);
+                numberOfSteps++;
+                checkIfSimilar(Y, new Point(T.X, T.Y + 1), b, S, numberOfSteps);
+            }
+            ci = b.GetPixel(T.X + 1, T.Y);
+            if (Sim(ci, Y) <= S && Sim(ci, Y) != 0.0)
+            {
+                b.SetPixel(T.X + 1, T.Y, pickedColor);
+                numberOfSteps++;
+                checkIfSimilar(Y, new Point(T.X + 1, T.Y), b, S, numberOfSteps);
+            }
+            ci = b.GetPixel(T.X + 1, T.Y - 1);
+            if (Sim(ci, Y) <= S && Sim(ci, Y) != 0.0)
+            {
+                b.SetPixel(T.X + 1, T.Y - 1, pickedColor);
+                numberOfSteps++;
+                checkIfSimilar(Y, new Point(T.X + 1, T.Y - 1), b, S, numberOfSteps);
+            }
+            ci = b.GetPixel(T.X + 1, T.Y + 1);
+            if (Sim(ci, Y) <= S && Sim(ci, Y) != 0.0)
+            {
+                b.SetPixel(T.X + 1, T.Y + 1, pickedColor);
+                numberOfSteps++;
+                checkIfSimilar(Y, new Point(T.X + 1, T.Y + 1), b, S, numberOfSteps);
+            }
+
+            return;
+        }
+
+        public void applyFloodFilter(Color c, int x, int y)
+        {
+            Bitmap image;
+            if (imageModel.getFilteredImage() != null)
+                image = imageModel.getFilteredImage();
+            else
+                image = imageModel.getBaseImage();
+
+            this.undoBuffer.push(image);
+
+            image.SetPixel(x, y, pickedColor);
+
+            int treshold = 0;
+
+            Parameter dlg = new Parameter();
+            dlg.nValue = 0;
+
+            if (DialogResult.OK == dlg.ShowDialog())
+                treshold = dlg.nValue;
+
+            //checkIfSimilar(c, new Point(x, y), image, treshold, 0);
+            image = floodfill(c, image, x, y, pickedColor, treshold);
+
+            imageModel.setFilteredImage(image);
+            baseView.setBaseImageFromBitmap(image);
+            imageModel.setCIEImage(setCIEImage(image));
+            RGBModel[,] rgbImage = convertToRGB(imageModel.getCIEImage());
+            histogramView.setBaseImage(imageModel.getFilteredImage());
+            channelView.setFilteredChannelImages(image, setRedChannel(rgbImage), setGreenChannel(rgbImage), setBlueChannel(rgbImage));
+
+        }
+
     }
 }

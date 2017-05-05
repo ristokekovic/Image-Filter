@@ -17,3 +17,6 @@ C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\
 C:\Users\Riki\Documents\Visual Studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.Parameter.resources
 C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.csprojResolveAssemblyReference.cache
 C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\obj\Debug\ImageFilter.HistogramFilterInput.resources
+C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\Wav.Net.dll
+C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\NAudio.dll
+C:\Users\Riki\documents\visual studio 2015\Projects\ImageFilter\ImageFilter\bin\Debug\NAudio.xml
